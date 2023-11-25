@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://domyuysdt4b7y"]
+
+[ext_resource type="PackedScene" uid="uid://8b61ggjjinp5" path="res://Ant.tscn" id="1_roq24"]
+[ext_resource type="Script" path="res://AntQueen.gd" id="2_wybr5"]
+
+[node name="AntQueen" instance=ExtResource("1_roq24")]
+script = ExtResource("2_wybr5")

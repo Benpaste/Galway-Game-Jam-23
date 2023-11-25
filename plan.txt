@@ -1,0 +1,32 @@
+1100: brainstorm ideas
+1130: how-to
+1145: set up project
+1200: program
+1700: polish
+
+anthill simulator
+start off with queen, workers, drones
+queen needs food. when queen dies, game over
+send workers to get food, dig holes
+weather changes, anthill can get damaged, food more/less prevalent
+queen lays eggs
+larvae hatch and need food
+weather forecast
+
+queen stomach
+ants go out to get food and come back
+
+press button to send ants to find food
+after a certain amount of time, ants find food
+
+IF FOOD ALIVE:
+	attempt to kill
+	fighting damages ants and food
+
+ONCE FOOD DEAD:
+	if food is too heavy (weight/ants):
+	ants bring back bit by bit
+	else:
+	ants bring back whole thing
+
+
