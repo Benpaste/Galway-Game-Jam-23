@@ -1,17 +1,74 @@
-[gd_scene load_steps=8 format=3 uid="uid://c2mfrxdg0ruld"]
+[gd_scene load_steps=19 format=3 uid="uid://c2mfrxdg0ruld"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_6d5k7"]
 [ext_resource type="Script" path="res://AntQueen.gd" id="2_ejx5p"]
+[ext_resource type="Script" path="res://AntFollow.gd" id="2_o0ry8"]
 [ext_resource type="PackedScene" uid="uid://bghhusn3pp584" path="res://healthbar.tscn" id="2_ygw06"]
 [ext_resource type="Script" path="res://Food.gd" id="3_5b1n6"]
+[ext_resource type="PackedScene" uid="uid://bf3vvb4bxbu7g" path="res://ant_graphic.tscn" id="3_lds7x"]
 [ext_resource type="Script" path="res://PopLabel.gd" id="4_luhpv"]
 [ext_resource type="Script" path="res://ForageLabel.gd" id="5_4x6cx"]
 [ext_resource type="Theme" uid="uid://desch61f3eesi" path="res://main.tres" id="5_wvql7"]
+[ext_resource type="Script" path="res://FoodLabel.gd" id="6_r6cwb"]
+[ext_resource type="Script" path="res://NewsLabel.gd" id="9_uhx06"]
+[ext_resource type="Script" path="res://DistanceLabel.gd" id="11_hkowu"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ixu0n"]
+emission_shape = 3
+emission_box_extents = Vector3(128, 1, 1)
+particle_flag_disable_z = true
+direction = Vector3(0, 1, 0)
+spread = 0.0
+gravity = Vector3(0, 980, 0)
+initial_velocity_min = 256.0
+initial_velocity_max = 256.0
+orbit_velocity_min = 0.0
+orbit_velocity_max = 0.0
+color = Color(0.45098, 0.623529, 1, 1)
+turbulence_enabled = true
+
+[sub_resource type="Gradient" id="Gradient_b5uo2"]
+colors = PackedColorArray(1, 1, 1, 0.360784, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_bl22h"]
+gradient = SubResource("Gradient_b5uo2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_w0gou"]
+emission_shape = 3
+emission_box_extents = Vector3(300, 100, 1)
+particle_flag_disable_z = true
+spread = 10.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 360.0
+initial_velocity_max = 360.0
+orbit_velocity_min = 0.0
+orbit_velocity_max = 0.0
+color_ramp = SubResource("GradientTexture1D_bl22h")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ti7en"]
+emission_shape = 3
+emission_box_extents = Vector3(1, 100, 1)
+particle_flag_disable_z = true
+spread = 10.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 200.0
+initial_velocity_max = 200.0
+orbit_velocity_min = 0.0
+orbit_velocity_max = 0.0
+scale_min = 2.0
+scale_max = 4.0
+color = Color(0.211765, 0.580392, 0.0745098, 1)
+
+[sub_resource type="Curve2D" id="Curve2D_fis7b"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 99, 134, 0, 0, 0, 0, 74, 166, 0, 0, 0, 0, -9, 168)
+}
+point_count = 3
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_6d5k7")
 
-[node name="Terrain" type="Node" parent="."]
+[node name="Terrain" type="Node2D" parent="."]
 
 [node name="Background" type="ColorRect" parent="Terrain"]
 offset_right = 200.0
@@ -19,6 +76,31 @@ offset_bottom = 200.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(0.0941176, 0.117647, 0.168627, 1)
+
+[node name="Rain" type="GPUParticles2D" parent="Terrain"]
+unique_name_in_owner = true
+position = Vector2(100, 0)
+emitting = false
+amount = 128
+process_material = SubResource("ParticleProcessMaterial_ixu0n")
+lifetime = 0.7
+draw_order = 0
+trail_lifetime = 0.1
+trail_sections = 2
+trail_section_subdivisions = 1
+
+[node name="Wind" type="GPUParticles2D" parent="Terrain"]
+unique_name_in_owner = true
+position = Vector2(100, 100)
+emitting = false
+amount = 256
+process_material = SubResource("ParticleProcessMaterial_w0gou")
+
+[node name="Leaves" type="GPUParticles2D" parent="Terrain"]
+unique_name_in_owner = true
+position = Vector2(-18, 100)
+emitting = false
+process_material = SubResource("ParticleProcessMaterial_ti7en")
 
 [node name="Ground" type="ColorRect" parent="Terrain"]
 offset_top = 166.0
@@ -31,6 +113,12 @@ position = Vector2(112, 26)
 scale = Vector2(2, 2)
 color = Color(0.22, 0.17424, 0.0484, 1)
 polygon = PackedVector2Array(-33, 70, -13, 54, 0, 54, 20, 70)
+
+[node name="AntFollow" type="Path2D" parent="Terrain"]
+unique_name_in_owner = true
+curve = SubResource("Curve2D_fis7b")
+script = ExtResource("2_o0ry8")
+ANT = ExtResource("3_lds7x")
 
 [node name="Ants" type="Node" parent="."]
 unique_name_in_owner = true
@@ -75,6 +163,16 @@ offset_bottom = 50.0
 theme_override_font_sizes/font_size = 8
 text = "Population Size: 6 ants"
 script = ExtResource("4_luhpv")
+
+[node name="FoodLabel" type="Label" parent="HUD"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 84.0
+offset_right = 112.0
+offset_bottom = 106.0
+theme_override_font_sizes/font_size = 8
+text = "Stored Food: 3000mg"
+script = ExtResource("6_r6cwb")
 
 [node name="ButtonOK" type="Button" parent="HUD"]
 unique_name_in_owner = true
@@ -122,24 +220,117 @@ text = "Send 6 to forage?"
 
 [node name="ForageLabel" type="Label" parent="HUD"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 0
-offset_left = 51.0
+offset_left = 5.0
 offset_top = 45.0
-offset_right = 91.0
+offset_right = 45.0
 offset_bottom = 67.0
 theme = ExtResource("5_wvql7")
 script = ExtResource("5_4x6cx")
+
+[node name="DistanceLabel" type="Label" parent="HUD"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 5.0
+offset_top = 58.0
+offset_right = 45.0
+offset_bottom = 80.0
+theme = ExtResource("5_wvql7")
+script = ExtResource("11_hkowu")
+
+[node name="WeatherLabel" type="Label" parent="HUD"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 5.0
+offset_top = 97.0
+offset_right = 45.0
+offset_bottom = 119.0
+theme = ExtResource("5_wvql7")
+
+[node name="NewsBG" type="ColorRect" parent="HUD"]
+layout_mode = 0
+offset_top = 189.0
+offset_right = 205.0
+offset_bottom = 200.0
+color = Color(0, 0, 0, 1)
+
+[node name="NewsLabel" type="Label" parent="HUD"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 40.0
+offset_top = 189.0
+offset_right = 200.0
+offset_bottom = 206.0
+text = "Nest eating well!"
+horizontal_alignment = 1
+script = ExtResource("9_uhx06")
+
+[node name="NewsTimer" type="Timer" parent="HUD/NewsLabel"]
+wait_time = 1.5
+autostart = true
+
+[node name="NewNewsTimer" type="Timer" parent="HUD/NewsLabel"]
+wait_time = 4.0
+autostart = true
+
+[node name="NewsFG" type="ColorRect" parent="HUD"]
+layout_mode = 0
+offset_top = 189.0
+offset_right = 40.0
+offset_bottom = 229.0
+color = Color(1, 0, 0, 1)
+
+[node name="NewsLabel" type="Label" parent="HUD/NewsFG"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "AntNews"
+
+[node name="CurrentScoreLabel" type="Label" parent="HUD"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 3.0
+offset_top = 174.0
+offset_right = 63.0
+offset_bottom = 191.0
+text = "Score: 0 hrs"
+
+[node name="HiScoreLabel" type="Label" parent="HUD"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -3.0
+offset_top = 174.0
+offset_right = 197.0
+offset_bottom = 191.0
+text = "Record: 0 hrs"
+horizontal_alignment = 2
 
 [node name="TickTimer" type="Timer" parent="."]
 wait_time = 0.4
 autostart = true
 
+[node name="WeatherTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="BabyTimer" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
+[connection signal="gameover" from="Ants/AntQueen" to="." method="_on_ant_queen_gameover"]
 [connection signal="button_down" from="HUD/ButtonOK" to="." method="_on_button_ok_button_down"]
 [connection signal="button_down" from="HUD/SendDialog/ButtonPlus" to="." method="_on_button_plus_button_down"]
 [connection signal="button_down" from="HUD/SendDialog/ButtonMinus" to="." method="_on_button_minus_button_down"]
+[connection signal="timeout" from="HUD/NewsLabel/NewsTimer" to="HUD/NewsLabel" method="_on_news_timer_timeout"]
+[connection signal="timeout" from="HUD/NewsLabel/NewNewsTimer" to="HUD/NewsLabel" method="_on_new_news_timer_timeout"]
 [connection signal="timeout" from="TickTimer" to="." method="do_tick"]
 [connection signal="timeout" from="TickTimer" to="HUD/ForageLabel" method="_on_tick_timer_timeout"]
+[connection signal="timeout" from="WeatherTimer" to="." method="_on_weather_timer_timeout"]
+[connection signal="timeout" from="BabyTimer" to="." method="_on_baby_timer_timeout"]
 
 [editable path="HUD/HealthbarPop"]
 [editable path="HUD/HealthbarQueen"]

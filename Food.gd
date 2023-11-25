@@ -10,13 +10,13 @@ var my_alive = false
 
 var food_types = {
 	"Caterpillar": {
-		weight: 100,
+		weight: 300,
 		alive: true,},
 	"Slug": {
 		weight: 1000,
 		alive: true,},
 	"Leaf": {
-		weight: 50,
+		weight: 100,
 		alive: false,},
 	}
 
@@ -33,6 +33,10 @@ func initialize():
 	my_weight *= randf_range(1-variability,1+variability)
 	
 	my_alive = food_types[type][alive]
-	if randi_range(1,10) == 2:
+	if randi_range(1,5) == 2:
 		my_alive = false
-	
+
+
+func set_null(): type = ""
+
+func get_null(): return type == ""

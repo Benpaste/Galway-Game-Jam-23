@@ -2,4 +2,8 @@ extends Ant
 class_name AntQueen
 
 func _init():
-	MAX_HEALTH = pow(5,5)
+	MAX_HEALTH = 70
+
+signal gameover(i: int)
+func die():
+	gameover.emit(age)
