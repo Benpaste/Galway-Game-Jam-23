@@ -136,6 +136,7 @@ func get_idle_ants():
 func _on_button_ok_button_down():
 	match foraging:
 		FORAGING.IDLE:
+			distance_from_nest = 0
 			send_foragers()
 		FORAGING.FOUND:
 			set_foraging(FORAGING.INVEST)
